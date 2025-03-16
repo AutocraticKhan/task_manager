@@ -129,6 +129,12 @@ def complete_subtask(request, subtask_id):
     else:
         return HttpResponse("Invalid request method.", status=405)
 
+def about(request):
+    return render(request, 'about.html')
+
+def signup(request):
+    return HttpResponse("Signup page")
+
 def task_detail(request, task_id):
     task = Task.objects.get(pk=task_id)
     subtasks = Subtask.objects.filter(task=task)

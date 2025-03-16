@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+
+{% block title %}About Task Manager{% endblock %}
+
+{% block content %}
+<section class="about-hero">
+    <div class="hero-overlay">
+        <div class="container">
+            <h1 class="hero-title">
+                <i class="fas fa-users-cog"></i> About Our Task Manager
+            </h1>
+            <p class="hero-subtitle">Empowering Productivity Through Intelligent Design</p>
+        </div>
+    </div>
+</section>
+
+<main class="container">
+    <!-- Mission Section -->
+    <section class="about-section mission">
+        <div class="section-header">
+            <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
+            <p class="section-subtitle">Redefining Task Management</p>
+        </div>
+        <div class="mission-content">
+            <p>We're committed to creating intuitive tools that help individuals and teams achieve more with less stress. Our platform combines cutting-edge technology with user-centered design to deliver a task management experience that actually works.</p>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="about-section features">
+        <div class="section-header">
+            <h2><i class="fas fa-star"></i> Why Choose Us?</h2>
+            <p class="section-subtitle">Features That Make the Difference</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon bg-primary">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Smart Prioritization</h3>
+                <p>AI-powered task sorting based on deadlines, importance, and your work patterns</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon bg-success">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Military-Grade Security</h3>
+                <p>End-to-end encryption and regular security audits to protect your data</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon bg-purple">
+                    <i class="fas fa-sync"></i>
+                </div>
+                <h3>Real-Time Sync</h3>
+                <p>Instant updates across all your devices with our cloud infrastructure</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="about-section team">
+        <div class="section-header">
+            <h2><i class="fas fa-users"></i> Meet the Team</h2>
+            <p class="section-subtitle">The Minds Behind the Magic</p>
+        </div>
+        <div class="team-grid">
+            <div class="team-card">
+                <img src="https://example.com/team1.jpg" alt="CEO" class="team-photo">
+                <h3>Alex Johnson</h3>
+                <p class="role">Founder & CEO</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+
+            <div class="team-card">
+                <img src="https://example.com/team2.jpg" alt="CTO" class="team-photo">
+                <h3>Sarah Chen</h3>
+                <p class="role">Chief Technology Officer</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-dev"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stat-item">
+            <div class="stat-number">50K+</div>
+            <div class="stat-label">Active Users</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">98.9%</div>
+            <div class="stat-label">Uptime</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Support</div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Transform Your Productivity?</h2>
+        <a href="{% url 'signup' %}" class="cta-button">
+            Start Free Trial <i class="fas fa-rocket"></i>
+        </a>
+    </section>
+</main>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* About Page Specific Styles */
+    .about-hero {
+        background: linear-gradient(135deg, rgba(52, 73, 102, 0.9) 0%, rgba(42, 67, 101, 0.9) 100%),
+                    url('https://images.unsplash.com/photo-1552664730-d307ca884978') center/cover;
+        padding: 8rem 1rem;
+        text-align: center;
+        color: white;
+    }
+
+    .section-header {
+        text-align: center;
+        margin: 4rem 0;
+    }
+
+    .section-header h2 {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+
+    .section-header .section-subtitle {
+        color: #95a5a6;
+        font-size: 1.1rem;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 3rem;
+        margin: 3rem 0;
+    }
+
+    .feature-card {
+        text-align: center;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.06);
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+
+    .team-card {
+        text-align: center;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .team-card:hover {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .team-photo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 1rem;
+        border: 3px solid var(--primary);
+    }
+
+    .role {
+        color: #7f8c8d;
+        margin-bottom: 1rem;
+    }
+
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .social-links a {
+        color: var(--primary);
+        font-size: 1.2rem;
+        transition: color 0.3s ease;
+    }
+
+    .social-links a:hover {
+        color: var(--primary-dark);
+    }
+
+    .stats-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 2rem;
+        text-align: center;
+        padding: 4rem 0;
+        background: #f8f9fa;
+        margin: 4rem 0;
+        border-radius: 15px;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .stat-label {
+        color: #7f8c8d;
+        font-size: 0.95rem;
+    }
+
+    .cta-section {
+        text-align: center;
+        padding: 4rem 0;
+        background: var(--success);
+        border-radius: 15px;
+        color: white;
+        margin: 4rem 0;
+    }
+
+    .cta-section h2 {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .cta-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.2rem 2.5rem;
+        background: white;
+        color: var(--success-dark);
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    @media (max-width: 768px) {
+        .about-hero {
+            padding: 5rem 1rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+        }
+        
+        .stats-section {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
