@@ -150,7 +150,7 @@ def signup(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request, user, backend='allauth.account.auth_backends.AuthenticationBackend')
             return redirect('home')
     else:
         form = SignupForm()
