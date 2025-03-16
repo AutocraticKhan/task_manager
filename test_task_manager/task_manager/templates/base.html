@@ -361,9 +361,13 @@
                 <a href="{% url 'add_task' %}" class="nav-link">
                     <i class="fas fa-plus"></i> Add Task
                 </a>
-                <a href="{% url 'account_logout' %}" class="nav-link">
+                <a href="{% url 'account_logout' %}?next=/" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
+                <form id="logout-form" action="{% url 'account_logout' %}" method="post" style="display: none;">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="/" />
+                </form>
                 {% else %}
                 <a href="{% url 'login' %}" class="nav-link">
                     <i class="fas fa-sign-in-alt"></i> Sign In/Sign Up
