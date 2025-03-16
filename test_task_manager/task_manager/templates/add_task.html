@@ -3,25 +3,243 @@
 {% block title %}Add Task{% endblock %}
 
 {% block content %}
-    <h2>Add Task</h2>
-    <form method="post">
-        {% csrf_token %}
-        <label for="description">Description:</label><br>
-        <textarea id="description" name="description" rows="4" cols="50"></textarea><br><br>
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-plus-circle"></i> Add New Task
+        </h2>
+        <p class="text-muted">Create a new task with details and deadline</p>
+    </div>
+    
+    <div class="card-body">
+        <form method="post" class="task-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="description" class="form-label">
+                    <i class="fas fa-align-left"></i> Description:
+                </label>
+                <textarea 
+                    id="description" 
+                    name="description" 
+                    rows="4" 
+                    class="form-control" 
+                    placeholder="What needs to be done?"
+                    required
+                ></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="start_date" class="form-label">
+                        <i class="fas fa-calendar-alt"></i> Start Date:
+                    </label>
+                    <input 
+                        type="date" 
+                        id="start_date" 
+                        name="start_date" 
+                        class="form-control"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group half">
+                    <label for="due_date" class="form-label">
+                        <i class="fas fa-hourglass-end"></i> Due Date:
+                    </label>
+                    <input 
+                        type="date" 
+                        id="due_date" 
+                        name="due_date" 
+                        class="form-control"
+                        required
+                    >
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="priority" class="form-label">
+                    <i class="fas fa-flag"></i> Priority:
+                </label>
+                <select id="priority" name="priority" class="form-control">
+                    <option value="High">High</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Add Task
+                </button>
+                <a href="{% url 'all_tasks' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
 
-        <label for="start_date">Start Date:</label>
-        <input type="date" id="start_date" name="start_date"><br><br>
+{% block extra_css %}
+<style>
+    .card-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .card-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .text-muted {
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group.half {
+        flex: 1;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark);
+    }
+    
+    .form-label i {
+        color: var(--primary);
+        margin-right: 0.25rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 1rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-light);
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+    }
+    
+    textarea.form-control {
+        resize: vertical;
+    }
+    
+    select.form-control {
+        padding-right: 2rem;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        appearance: none;
+    }
+    
+    select.form-control option {
+        padding: 0.5rem;
+    }
+    
+    select.form-control option[value="High"] {
+        color: var(--danger);
+    }
+    
+    select.form-control option[value="Medium"] {
+        color: var(--warning);
+    }
+    
+    select.form-control option[value="Low"] {
+        color: var(--success);
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-align: center;
+        cursor: pointer;
+    }
+    
+    .btn-primary {
+        background-color: var(--primary);
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background-color: var(--primary-light);
+    }
+    
+    .btn-secondary {
+        background-color: #e9ecef;
+        color: var(--dark);
+    }
+    
+    .btn-secondary:hover {
+        background-color: #dee2e6;
+    }
+    
+    @media (max-width: 768px) {
+        .form-row {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
 
-        <label for="due_date">Due Date:</label>
-        <input type="date" id="due_date" name="due_date"><br><br>
-
-        <label for="priority">Priority:</label>
-        <select id="priority" name="priority">
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
-        </select><br><br>
-
-        <button type="submit">Add Task</button>
-    </form>
+{% block extra_js %}
+<script>
+    // Set default dates
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set start date to today
+        const today = new Date();
+        const formattedToday = today.toISOString().split('T')[0];
+        document.getElementById('start_date').value = formattedToday;
+        
+        // Set due date to one week from today
+        const nextWeek = new Date();
+        nextWeek.setDate(today.getDate() + 7);
+        const formattedNextWeek = nextWeek.toISOString().split('T')[0];
+        document.getElementById('due_date').value = formattedNextWeek;
+        
+        // Form validation
+        const form = document.querySelector('.task-form');
+        form.addEventListener('submit', function(event) {
+            const startDate = new Date(document.getElementById('start_date').value);
+            const dueDate = new Date(document.getElementById('due_date').value);
+            
+            if (dueDate < startDate) {
+                event.preventDefault();
+                alert('Due date cannot be earlier than start date');
+            }
+        });
+    });
+</script>
 {% endblock %}

@@ -3,17 +3,286 @@
 {% block title %}All Tasks{% endblock %}
 
 {% block content %}
-    <h2>All Tasks</h2>
-    <ul>
+<div class="page-header">
+    <div class="page-header-content">
+        <h2 class="page-title">
+            <i class="fas fa-list"></i> All Tasks
+        </h2>
+        <div class="page-actions">
+            <a href="{% url 'add_task' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Task
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if tasks %}
+    <div class="task-list">
         {% for task in tasks %}
-            <li>
-                <a href="{% url 'task_detail' task.id %}">{{ task.title }}</a> - Completion: {{ task.completion_percentage|floatformat:2 }}%
-                <div class="progress-bar" style="width: {{ task.completion_percentage }}%;"></div>
-                <form method="post" action="{% url 'delete_task' task.id %}" onsubmit="return confirmDelete();">
-                    {% csrf_token %}
-                    <button type="submit">Delete</button>
-                </form>
-            </li>
+            <div class="task-item {% if task.completion_percentage == 100 %}completed{% endif %}">
+                <div class="task-header">
+                    <h3 class="task-title">
+                        <a href="{% url 'task_detail' task.id %}">{{ task.title }}</a>
+                    </h3>
+                    <div class="task-actions">
+                        <a href="{% url 'task_detail' task.id %}" class="task-action" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <!-- Removed edit_task URL reference -->
+                        <a href="#" class="task-action delete" title="Delete Task" 
+                           onclick="return confirmDelete('{{ task.id }}', '{% url 'delete_task' task.id %}');">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="task-meta">
+                    <span><i class="fas fa-calendar-alt"></i> Due: {{ task.due_date|date:"M d, Y" }}</span>
+                    <span class="priority priority-{{ task.priority|lower }}">
+                        <i class="fas fa-flag"></i> {{ task.priority }}
+                    </span>
+                </div>
+                
+                <div class="task-progress">
+                    <div class="progress-info">
+                        <span class="progress-label">Completion:</span>
+                        <span class="progress-percentage">{{ task.completion_percentage|floatformat:0 }}%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar {% if task.completion_percentage == 100 %}complete{% endif %}" 
+                             style="width: {{ task.completion_percentage }}%;"></div>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
+{% else %}
+    <div class="empty-state card">
+        <div class="empty-state-icon">
+            <i class="fas fa-tasks"></i>
+        </div>
+        <h3 class="empty-state-title">No Tasks Yet</h3>
+        <p class="empty-state-description">You haven't created any tasks yet. Ready to be productive?</p>
+        <a href="{% url 'add_task' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Create Your First Task
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+    }
+    
+    .page-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .page-title {
+        font-size: 1.75rem;
+        margin: 0;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .page-title i {
+        color: var(--primary);
+    }
+    
+    .task-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .task-item {
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 1.25rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid var(--primary);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .task-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .task-item.completed {
+        border-left-color: var(--success);
+    }
+    
+    .task-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+    
+    .task-title {
+        font-size: 1.25rem;
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .task-title a {
+        color: var(--dark);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    
+    .task-title a:hover {
+        color: var(--primary);
+    }
+    
+    .task-actions {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .task-action {
+        color: var(--gray);
+        font-size: 1rem;
+        transition: all 0.2s;
+    }
+    
+    .task-action:hover {
+        color: var(--primary);
+    }
+    
+    .task-action.delete:hover {
+        color: var(--danger);
+    }
+    
+    .task-meta {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+    
+    .task-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    
+    .priority {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 0.8rem;
+    }
+    
+    .priority-high {
+        background-color: rgba(239, 71, 111, 0.1);
+        color: var(--danger);
+    }
+    
+    .priority-medium {
+        background-color: rgba(255, 209, 102, 0.1);
+        color: #d4a200;
+    }
+    
+    .priority-low {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: var(--success);
+    }
+    
+    .task-progress {
+        margin-top: 0.5rem;
+    }
+    
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.35rem;
+        font-size: 0.85rem;
+    }
+    
+    .progress-label {
+        color: var(--gray);
+    }
+    
+    .progress-percentage {
+        font-weight: 600;
+        color: var(--dark);
+    }
+    
+    .progress-bar-container {
+        width: 100%;
+        height: 8px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        height: 100%;
+        background-color: var(--primary);
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+    
+    .progress-bar.complete {
+        background-color: var(--success);
+    }
+    
+    /* Empty state styling */
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+    }
+    
+    .empty-state-icon {
+        font-size: 3rem;
+        color: var(--gray);
+        opacity: 0.5;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+    
+    .empty-state-description {
+        color: var(--gray);
+        max-width: 400px;
+        margin: 0 auto 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .page-header-content {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .task-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .task-actions {
+            width: 100%;
+            justify-content: flex-end;
+        }
+        
+        .task-meta {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+</style>
 {% endblock %}
