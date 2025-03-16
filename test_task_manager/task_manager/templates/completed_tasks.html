@@ -3,17 +3,233 @@
 {% block title %}Completed Tasks{% endblock %}
 
 {% block content %}
-    <h2>Completed Tasks</h2>
-    {% if completed_tasks %}
+<div class="page-header">
+    <div class="page-header-content">
+        <h2 class="page-title">
+            <i class="fas fa-check-circle"></i> Completed Tasks
+        </h2>
+        <div class="page-actions">
+            <a href="{% url 'all_tasks' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to All Tasks
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if completed_tasks %}
+    <div class="completed-tasks-list">
         {% for item in completed_tasks %}
-            <h3>{{ item.task.title }}</h3>
-            <ul>
-                {% for subtask in item.subtasks %}
-                    <li>{{ subtask.description }} - Due: {{ subtask.due_date }}</li>
-                {% endfor %}
-            </ul>
+            <div class="completed-task-card">
+                <div class="completed-task-header">
+                    <h3 class="completed-task-title">
+                        <i class="fas fa-check-circle completed-icon"></i>
+                        {{ item.task.title }}
+                    </h3>
+                    <span class="completed-date">
+                        Completed on {{ item.task.completed_date|date:"M d, Y" }}
+                    </span>
+                </div>
+                
+                {% if item.subtasks %}
+                    <div class="subtasks-list">
+                        <h4 class="subtasks-heading">
+                            <i class="fas fa-tasks"></i> Subtasks
+                        </h4>
+                        <ul class="subtasks">
+                            {% for subtask in item.subtasks %}
+                                <li class="subtask-item">
+                                    <div class="subtask-content">
+                                        <span class="subtask-description">{{ subtask.description }}</span>
+                                        <span class="subtask-meta">
+                                            <i class="fas fa-calendar-check"></i> Completed: 
+                                            <span class="subtask-date">{{ subtask.completed_date|date:"M d, Y" }}</span>
+                                        </span>
+                                        <span class="subtask-meta">
+                                            <i class="fas fa-hourglass-end"></i> Due: 
+                                            <span class="subtask-date">{{ subtask.due_date|date:"M d, Y" }}</span>
+                                        </span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
         {% endfor %}
-    {% else %}
-        <p>No completed tasks!</p>
-    {% endif %}
+    </div>
+{% else %}
+    <div class="empty-state card">
+        <div class="empty-state-icon">
+            <i class="fas fa-clipboard-check"></i>
+        </div>
+        <h3 class="empty-state-title">No Completed Tasks Yet</h3>
+        <p class="empty-state-description">You haven't completed any tasks yet. Complete tasks to see them appear here.</p>
+        <a href="{% url 'all_tasks' %}" class="btn btn-primary">
+            <i class="fas fa-list"></i> View Your Tasks
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+    }
+    
+    .page-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .page-title {
+        font-size: 1.75rem;
+        margin: 0;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .page-title i {
+        color: var(--success);
+    }
+    
+    .completed-tasks-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .completed-task-card {
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border-left: 4px solid var(--success);
+    }
+    
+    .completed-task-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .completed-task-title {
+        font-size: 1.25rem;
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .completed-icon {
+        color: var(--success);
+    }
+    
+    .completed-date {
+        color: var(--gray);
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    .subtasks-heading {
+        font-size: 1rem;
+        margin: 0 0 0.75rem 0;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .subtasks-heading i {
+        color: var(--primary);
+        font-size: 0.9rem;
+    }
+    
+    .subtasks {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .subtask-item {
+        background-color: #f8f9fa;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .subtask-content {
+        flex: 1;
+    }
+    
+    .subtask-description {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+    
+    .subtask-meta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        color: var(--gray);
+        font-size: 0.8rem;
+        margin-right: 1rem;
+    }
+    
+    .subtask-date {
+        color: var(--dark);
+    }
+    
+    /* Empty state styling */
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+    }
+    
+    .empty-state-icon {
+        font-size: 3rem;
+        color: var(--success);
+        opacity: 0.5;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+    
+    .empty-state-description {
+        color: var(--gray);
+        max-width: 400px;
+        margin: 0 auto 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .page-header-content {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .completed-task-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+    }
+</style>
 {% endblock %}
