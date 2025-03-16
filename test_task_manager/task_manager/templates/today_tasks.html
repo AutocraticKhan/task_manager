@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Today's Tasks{% endblock %}
+
+{% block content %}
+    <h2>Today's Tasks</h2>
+    {% if today_tasks %}
+        {% for item in today_tasks %}
+            <h3>{{ item.task.title }}</h3>
+            {% if item.pending_subtasks %}
+                <h4>Pending Subtasks:</h4>
+                <ul>
+                    {% for subtask in item.pending_subtasks %}
+                        <li>
+                            <form method="post" action="{% url 'complete_subtask' subtask.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="task_id" value="{{ item.task.id }}">
+                                <label>
+                                    <input type="checkbox" name="completed" value="True" {% if subtask.completed %}checked{% endif %} onchange="this.form.submit()">
+                                    {{ subtask.description }} - Due: {{ subtask.due_date }}
+                                </label>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <h4>Today's Subtasks:</h4>
+            <ul>
+                {% for subtask in item.subtasks %}
+                    <li>
+                        <form method="post" action="{% url 'complete_subtask' subtask.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="task_id" value="{{ item.task.id }}">
+                            <label>
+                                <input type="checkbox" name="completed" value="True" {% if subtask.completed %}checked{% endif %} onchange="this.form.submit()">
+                                {{ subtask.description }} - Due: {{ subtask.due_date }}
+                            </label>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% else %}
+        <p>No tasks for today!</p>
+    {% endif %}
+{% endblock %}

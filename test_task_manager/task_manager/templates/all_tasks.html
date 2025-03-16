@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}All Tasks{% endblock %}
+
+{% block content %}
+    <h2>All Tasks</h2>
+    <ul>
+        {% for task in tasks %}
+            <li>
+                <a href="{% url 'task_detail' task.id %}">{{ task.title }}</a> - Completion: {{ task.completion_percentage|floatformat:2 }}%
+                <div class="progress-bar" style="width: {{ task.completion_percentage }}%;"></div>
+                <form method="post" action="{% url 'delete_task' task.id %}" onsubmit="return confirmDelete();">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

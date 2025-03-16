@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Completed Tasks{% endblock %}
+
+{% block content %}
+    <h2>Completed Tasks</h2>
+    {% if completed_tasks %}
+        {% for item in completed_tasks %}
+            <h3>{{ item.task.title }}</h3>
+            <ul>
+                {% for subtask in item.subtasks %}
+                    <li>{{ subtask.description }} - Due: {{ subtask.due_date }}</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% else %}
+        <p>No completed tasks!</p>
+    {% endif %}
+{% endblock %}
