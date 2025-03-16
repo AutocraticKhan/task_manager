@@ -337,11 +337,14 @@
 <body>
     <header class="header">
         <div class="container header-content">
-            <a href="{% url 'all_tasks' %}" class="logo">
+            <a href="{% url 'home' %}" class="logo">
                 <i class="fas fa-tasks"></i>
                 <span>Task Manager</span>
             </a>
             <nav class="main-nav">
+                <a href="{% url 'home' %}" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
                 <a href="{% url 'all_tasks' %}" class="nav-link">
                     <i class="fas fa-list"></i> All Tasks
                 </a>
