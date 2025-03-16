@@ -3,44 +3,312 @@
 {% block title %}Today's Tasks{% endblock %}
 
 {% block content %}
-    <h2>Today's Tasks</h2>
-    {% if today_tasks %}
+<div class="page-header">
+    <div class="page-header-content">
+        <h2 class="page-title">
+            <i class="fas fa-calendar-day"></i> Today's Tasks
+        </h2>
+        <div class="page-actions">
+            <a href="{% url 'all_tasks' %}" class="btn btn-secondary">
+                <i class="fas fa-list"></i> All Tasks
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if today_tasks %}
+    <div class="today-tasks-list">
         {% for item in today_tasks %}
-            <h3>{{ item.task.title }}</h3>
-            {% if item.pending_subtasks %}
-                <h4>Pending Subtasks:</h4>
-                <ul>
-                    {% for subtask in item.pending_subtasks %}
-                        <li>
-                            <form method="post" action="{% url 'complete_subtask' subtask.id %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="task_id" value="{{ item.task.id }}">
-                                <label>
-                                    <input type="checkbox" name="completed" value="True" {% if subtask.completed %}checked{% endif %} onchange="this.form.submit()">
-                                    {{ subtask.description }} - Due: {{ subtask.due_date }}
-                                </label>
-                            </form>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            <h4>Today's Subtasks:</h4>
-            <ul>
-                {% for subtask in item.subtasks %}
-                    <li>
-                        <form method="post" action="{% url 'complete_subtask' subtask.id %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="task_id" value="{{ item.task.id }}">
-                            <label>
-                                <input type="checkbox" name="completed" value="True" {% if subtask.completed %}checked{% endif %} onchange="this.form.submit()">
-                                {{ subtask.description }} - Due: {{ subtask.due_date }}
-                            </label>
-                        </form>
-                    </li>
-                {% endfor %}
-            </ul>
+            <div class="task-card">
+                <div class="task-header">
+                    <h3 class="task-title">
+                        <i class="fas fa-clipboard-list"></i> {{ item.task.title }}
+                    </h3>
+                </div>
+                
+                {% if item.pending_subtasks %}
+                    <div class="subtasks-section">
+                        <h4 class="subtasks-heading">
+                            <i class="fas fa-hourglass-half"></i> Pending Subtasks
+                        </h4>
+                        <ul class="subtasks">
+                            {% for subtask in item.pending_subtasks %}
+                                <li class="subtask-item">
+                                    <form method="post" action="{% url 'complete_subtask' subtask.id %}" class="subtask-form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="task_id" value="{{ item.task.id }}">
+                                        <div class="subtask-checkbox">
+                                            <input type="checkbox" id="pending-subtask-{{ subtask.id }}" name="completed" value="True" {% if subtask.completed %}checked{% endif %} onchange="this.form.submit()">
+                                            <label class="checkbox-label" for="pending-subtask-{{ subtask.id }}"></label>
+                                        </div>
+                                        <div class="subtask-content">
+                                            <label for="pending-subtask-{{ subtask.id }}" class="subtask-description">
+                                                {{ subtask.description }}
+                                            </label>
+                                            <span class="subtask-meta">
+                                                <i class="fas fa-calendar-alt"></i> Due: 
+                                                <span class="subtask-date">{{ subtask.due_date|date:"M d, Y" }}</span>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                
+                <div class="subtasks-section">
+                    <h4 class="subtasks-heading">
+                        <i class="fas fa-calendar-check"></i> Today's Subtasks
+                    </h4>
+                    <ul class="subtasks">
+                        {% for subtask in item.subtasks %}
+                            <li class="subtask-item {% if subtask.completed %}completed{% endif %}">
+                                <form method="post" action="{% url 'complete_subtask' subtask.id %}" class="subtask-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="task_id" value="{{ item.task.id }}">
+                                    <div class="subtask-checkbox">
+                                        <input type="checkbox" id="subtask-{{ subtask.id }}" name="completed" value="True" {% if subtask.completed %}checked{% endif %} onchange="this.form.submit()">
+                                        <label class="checkbox-label" for="subtask-{{ subtask.id }}"></label>
+                                    </div>
+                                    <div class="subtask-content">
+                                        <label for="subtask-{{ subtask.id }}" class="subtask-description">
+                                            {{ subtask.description }}
+                                        </label>
+                                        <span class="subtask-meta">
+                                            <i class="fas fa-calendar-alt"></i> Due: 
+                                            <span class="subtask-date">{{ subtask.due_date|date:"M d, Y" }}</span>
+                                        </span>
+                                    </div>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         {% endfor %}
-    {% else %}
-        <p>No tasks for today!</p>
-    {% endif %}
+    </div>
+{% else %}
+    <div class="empty-state card">
+        <div class="empty-state-icon">
+            <i class="fas fa-calendar-day"></i>
+        </div>
+        <h3 class="empty-state-title">No Tasks for Today</h3>
+        <p class="empty-state-description">Your schedule is clear for today. Enjoy your day!</p>
+        <a href="{% url 'all_tasks' %}" class="btn btn-primary">
+            <i class="fas fa-list"></i> View All Tasks
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+    }
+    
+    .page-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .page-title {
+        font-size: 1.75rem;
+        margin: 0;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .page-title i {
+        color: var(--primary);
+    }
+    
+    .today-tasks-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .task-card {
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .task-header {
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .task-title {
+        font-size: 1.25rem;
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .task-title i {
+        color: var(--primary);
+    }
+    
+    .subtasks-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .subtasks-section:last-child {
+        margin-bottom: 0;
+    }
+    
+    .subtasks-heading {
+        font-size: 1rem;
+        margin: 0 0 0.75rem 0;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .subtasks-heading i {
+        color: var(--primary);
+        font-size: 0.9rem;
+    }
+    
+    .subtasks {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .subtask-item {
+        background-color: #f8f9fa;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+    
+    .subtask-item.completed {
+        background-color: rgba(40, 167, 69, 0.05);
+        border-left: 3px solid var(--success);
+    }
+    
+    .subtask-form {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .subtask-checkbox {
+        position: relative;
+        margin-top: 3px;
+    }
+    
+    .subtask-checkbox input[type="checkbox"] {
+        opacity: 0;
+        position: absolute;
+        height: 0;
+        width: 0;
+    }
+    
+    .checkbox-label {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--gray);
+        border-radius: 3px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .subtask-checkbox input[type="checkbox"]:checked + .checkbox-label {
+        background-color: var(--success);
+        border-color: var(--success);
+    }
+    
+    .subtask-checkbox input[type="checkbox"]:checked + .checkbox-label:after {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 2px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+    
+    .subtask-content {
+        flex: 1;
+    }
+    
+    .subtask-description {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+        cursor: pointer;
+    }
+    
+    .subtask-item.completed .subtask-description {
+        color: var(--success);
+        text-decoration: line-through;
+        text-decoration-thickness: 1px;
+        text-decoration-color: rgba(40, 167, 69, 0.5);
+    }
+    
+    .subtask-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        color: var(--gray);
+        font-size: 0.8rem;
+    }
+    
+    .subtask-date {
+        color: var(--dark);
+    }
+    
+    /* Empty state styling */
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+    }
+    
+    .empty-state-icon {
+        font-size: 3rem;
+        color: var(--primary);
+        opacity: 0.5;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+    
+    .empty-state-description {
+        color: var(--gray);
+        max-width: 400px;
+        margin: 0 auto 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .page-header-content {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+    }
+</style>
 {% endblock %}

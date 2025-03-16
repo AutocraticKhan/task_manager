@@ -3,12 +3,241 @@
 {% block title %}{{ task.title }}{% endblock %}
 
 {% block content %}
-    <h2>{{ task.title }}</h2>
-    <ul>
-        {% for subtask in subtasks %}
-            <li {% if subtask.completed %}style="color: green;"{% endif %}>
-                {{ subtask.description }} - Due: {{ subtask.due_date }}
-            </li>
-        {% endfor %}
-    </ul>
+<div class="page-header">
+    <div class="page-header-content">
+        <h2 class="page-title">
+            <i class="fas fa-clipboard-list"></i> {{ task.title }}
+        </h2>
+        <div class="page-actions">
+            <a href="{% url 'all_tasks' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to All Tasks
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="task-detail-card">
+    <div class="task-header">
+        <div class="task-info">
+            <span class="task-meta">
+                <i class="fas fa-calendar"></i> Due: 
+                <span class="task-date">{{ task.due_date|date:"M d, Y" }}</span>
+            </span>
+            {% if task.completed %}
+                <span class="task-status completed">
+                    <i class="fas fa-check-circle"></i> Completed
+                </span>
+            {% else %}
+                <span class="task-status pending">
+                    <i class="fas fa-clock"></i> Pending
+                </span>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if subtasks %}
+        <div class="subtasks-container">
+            <h3 class="subtasks-heading">
+                <i class="fas fa-tasks"></i> Subtasks
+            </h3>
+            <ul class="subtasks">
+                {% for subtask in subtasks %}
+                    <li class="subtask-item {% if subtask.completed %}completed{% endif %}">
+                        <div class="subtask-checkbox">
+                            {% if subtask.completed %}
+                                <i class="fas fa-check-circle"></i>
+                            {% else %}
+                                <i class="far fa-circle"></i>
+                            {% endif %}
+                        </div>
+                        <div class="subtask-content">
+                            <span class="subtask-description">{{ subtask.description }}</span>
+                            <span class="subtask-meta">
+                                <i class="fas fa-calendar-alt"></i> Due: 
+                                <span class="subtask-date">{{ subtask.due_date|date:"M d, Y" }}</span>
+                            </span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <div class="empty-subtasks">
+            <p>No subtasks have been added to this task yet.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+    }
+    
+    .page-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .page-title {
+        font-size: 1.75rem;
+        margin: 0;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .page-title i {
+        color: var(--primary);
+    }
+    
+    .task-detail-card {
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .task-header {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .task-info {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+    
+    .task-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+    
+    .task-date {
+        color: var(--dark);
+        font-weight: 500;
+    }
+    
+    .task-status {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+    }
+    
+    .task-status.completed {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: var(--success);
+    }
+    
+    .task-status.pending {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: var(--warning);
+    }
+    
+    .subtasks-heading {
+        font-size: 1.1rem;
+        margin: 0 0 1rem 0;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .subtasks-heading i {
+        color: var(--primary);
+    }
+    
+    .subtasks {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .subtask-item {
+        background-color: #f8f9fa;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.2s ease;
+    }
+    
+    .subtask-item.completed {
+        background-color: rgba(40, 167, 69, 0.05);
+        border-left: 3px solid var(--success);
+    }
+    
+    .subtask-checkbox i {
+        font-size: 1.1rem;
+    }
+    
+    .subtask-item.completed .subtask-checkbox i {
+        color: var(--success);
+    }
+    
+    .subtask-item:not(.completed) .subtask-checkbox i {
+        color: var(--gray);
+    }
+    
+    .subtask-content {
+        flex: 1;
+    }
+    
+    .subtask-description {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+    
+    .subtask-item.completed .subtask-description {
+        color: var(--success);
+        text-decoration: line-through;
+        text-decoration-thickness: 1px;
+        text-decoration-color: rgba(40, 167, 69, 0.5);
+    }
+    
+    .subtask-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        color: var(--gray);
+        font-size: 0.8rem;
+    }
+    
+    .empty-subtasks {
+        text-align: center;
+        padding: 2rem 0;
+        color: var(--gray);
+    }
+    
+    @media (max-width: 768px) {
+        .page-header-content {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .task-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+    }
+</style>
 {% endblock %}
