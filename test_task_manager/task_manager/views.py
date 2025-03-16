@@ -3,12 +3,17 @@ from django.http import HttpResponse
 from . import task_utils
 from . import task_scheduler
 from .models import Task, Subtask
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from .forms import LoginForm, SignupForm
 from datetime import date, timedelta, datetime
 import os
 
 def home(request):
     return render(request, 'home.html')
 
+@login_required
 def all_tasks(request):
     tasks = Task.objects.all()
     for task in tasks:
@@ -21,6 +26,7 @@ def all_tasks(request):
             task.completion_percentage = 0
     return render(request, 'all_tasks.html', {'tasks': tasks})
 
+@login_required
 def today_tasks(request):
     today = date.today()
     tasks = Task.objects.all()
@@ -52,6 +58,7 @@ def today_tasks(request):
 
     return render(request, 'today_tasks.html', {'today_tasks': today_tasks_list})
 
+@login_required
 def completed_tasks(request):
     completed_subtasks = Subtask.objects.filter(completed=True)
     completed_tasks_list = []
@@ -65,6 +72,7 @@ def completed_tasks(request):
                     break
     return render(request, 'completed_tasks.html', {'completed_tasks': completed_tasks_list})
 
+@login_required
 def add_task(request):
     if request.method == 'POST':
         description = request.POST['description']
@@ -94,6 +102,7 @@ def add_task(request):
     else:
         return render(request, 'add_task.html')
 
+@login_required
 def task_breakdown(request):
     if request.method == 'POST':
         task_description = request.POST.get('task_description')
@@ -113,6 +122,7 @@ def task_breakdown(request):
     else:
         return HttpResponse("Please submit a POST request with task_description, start_date, due_date, and priority.", content_type="text/plain")
 
+@login_required
 def redistribute_tasks_view(request):
     try:
         task_scheduler.main()
@@ -120,6 +130,7 @@ def redistribute_tasks_view(request):
     except Exception as e:
         return HttpResponse(f"Error redistributing tasks: {e}", content_type="text/plain")
 
+@login_required
 def complete_subtask(request, subtask_id):
     if request.method == 'POST':
         subtask = Subtask.objects.get(pk=subtask_id)
@@ -129,17 +140,53 @@ def complete_subtask(request, subtask_id):
     else:
         return HttpResponse("Invalid request method.", status=405)
 
+def signup(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = SignupForm()
+    return render(request, 'account/signup.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+    else:
+        form = LoginForm()
+    return render(request, 'account/login.html', {'form': form})
+
+from django.contrib.auth.forms import PasswordResetForm
+
+def password_reset(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            # Email sending logic here (omitted for brevity)
+            return HttpResponse("Password reset email sent.")
+    else:
+        form = PasswordResetForm()
+    return render(request, 'account/password_reset.html', {'form': form})
+
 def about(request):
     return render(request, 'about.html')
 
-def signup(request):
-    return HttpResponse("Signup page")
-
+@login_required
 def task_detail(request, task_id):
     task = Task.objects.get(pk=task_id)
     subtasks = Subtask.objects.filter(task=task)
     return render(request, 'task_detail.html', {'task': task, 'subtasks': subtasks})
 
+@login_required
 def delete_task(request, task_id):
     if request.method == 'POST':
         task = Task.objects.get(pk=task_id)

@@ -1,245 +1,86 @@
-{% extends 'base.html' %}
-
-{% block title %}Add Task{% endblock %}
-
+{% extends "base.html" %}
 {% block content %}
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">
-            <i class="fas fa-plus-circle"></i> Add New Task
-        </h2>
-        <p class="text-muted">Create a new task with details and deadline</p>
+<div style="max-width: 450px; margin: 2rem auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;">
+    <!-- Header -->
+    <div style="padding: 1.5rem; background-color: #f8f9fa; border-bottom: 1px solid #e9ecef;">
+        <h1 style="margin: 0 0 0.5rem 0; font-size: 1.5rem; color: #4361ee; display: flex; align-items: center;">
+            {% if 'fas' in request.build_absolute_uri %}
+            <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+            {% endif %}
+            Login
+        </h1>
+        <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Enter your credentials to access your account</p>
     </div>
     
-    <div class="card-body">
-        <form method="post" class="task-form">
+    <!-- Form Body -->
+    <div style="padding: 1.5rem;">
+        <form method="post" style="margin: 0;">
             {% csrf_token %}
             
-            <div class="form-group">
-                <label for="description" class="form-label">
-                    <i class="fas fa-align-left"></i> Description:
-                </label>
-                <textarea 
-                    id="description" 
-                    name="description" 
-                    rows="4" 
-                    class="form-control" 
-                    placeholder="What needs to be done?"
-                    required
-                ></textarea>
+            <!-- Form Errors -->
+            {% if form.non_field_errors %}
+            <div style="padding: 0.75rem; margin-bottom: 1rem; background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; border-radius: 4px;">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
             </div>
+            {% endif %}
             
-            <div class="form-row">
-                <div class="form-group half">
-                    <label for="start_date" class="form-label">
-                        <i class="fas fa-calendar-alt"></i> Start Date:
-                    </label>
-                    <input 
-                        type="date" 
-                        id="start_date" 
-                        name="start_date" 
-                        class="form-control"
-                        required
-                    >
-                </div>
+            <!-- Form Fields -->
+            {% for field in form %}
+            <div style="margin-bottom: 1.25rem;">
+                <label for="{{ field.id_for_label }}" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #343a40;">
+                    {{ field.label }}
+                </label>
                 
-                <div class="form-group half">
-                    <label for="due_date" class="form-label">
-                        <i class="fas fa-hourglass-end"></i> Due Date:
-                    </label>
-                    <input 
-                        type="date" 
-                        id="due_date" 
-                        name="due_date" 
-                        class="form-control"
-                        required
-                    >
+                {{ field|safe }}
+                
+                {% if field.errors %}
+                <div style="margin-top: 0.25rem; color: #dc3545; font-size: 0.875rem;">
+                    {% for error in field.errors %}
+                        {{ error }}
+                    {% endfor %}
                 </div>
+                {% endif %}
+                
+                {% if field.help_text %}
+                <div style="margin-top: 0.25rem; color: #6c757d; font-size: 0.75rem;">
+                    {{ field.help_text|safe }}
+                </div>
+                {% endif %}
             </div>
+            {% endfor %}
             
-            <div class="form-group">
-                <label for="priority" class="form-label">
-                    <i class="fas fa-flag"></i> Priority:
-                </label>
-                <select id="priority" name="priority" class="form-control">
-                    <option value="High">High</option>
-                    <option value="Medium" selected>Medium</option>
-                    <option value="Low">Low</option>
-                </select>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Add Task
+            <!-- Submit Button -->
+            <div style="margin-bottom: 1.5rem;">
+                <button type="submit" style="display: inline-flex; align-items: center; padding: 0.75rem 1.5rem; font-size: 1rem; color: white; background-color: #4361ee; border: none; border-radius: 4px; cursor: pointer;">
+                    {% if 'fas' in request.build_absolute_uri %}
+                    <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                    {% endif %}
+                    Login
                 </button>
-                <a href="{% url 'all_tasks' %}" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancel
+            </div>
+            
+            <!-- Links -->
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <a href="{% url 'password_reset' %}" style="color: #4361ee; text-decoration: none;">
+                    {% if 'fas' in request.build_absolute_uri %}
+                    <i class="fas fa-key" style="margin-right: 0.25rem;"></i>
+                    {% endif %}
+                    Forgot password?
                 </a>
+                
+                <div style="margin-top: 0.5rem;">
+                    <span style="color: #6c757d;">Don't have an account?</span>
+                    <a href="{% url 'signup' %}" style="color: #4361ee; text-decoration: none; margin-left: 0.5rem;">
+                        {% if 'fas' in request.build_absolute_uri %}
+                        <i class="fas fa-user-plus" style="margin-right: 0.25rem;"></i>
+                        {% endif %}
+                        Sign up
+                    </a>
+                </div>
             </div>
         </form>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<style>
-    .card-header {
-        margin-bottom: 1.5rem;
-    }
-    
-    .card-title {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-        color: var(--primary);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .text-muted {
-        color: var(--gray);
-        font-size: 0.9rem;
-    }
-    
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-    
-    .form-row {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .form-group.half {
-        flex: 1;
-    }
-    
-    .form-label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        color: var(--dark);
-    }
-    
-    .form-label i {
-        color: var(--primary);
-        margin-right: 0.25rem;
-    }
-    
-    .form-control {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        font-family: inherit;
-        font-size: 1rem;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    }
-    
-    .form-control:focus {
-        border-color: var(--primary-light);
-        outline: 0;
-        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
-    }
-    
-    textarea.form-control {
-        resize: vertical;
-    }
-    
-    select.form-control {
-        padding-right: 2rem;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 0.75rem center;
-        background-size: 16px 12px;
-        appearance: none;
-    }
-    
-    select.form-control option {
-        padding: 0.5rem;
-    }
-    
-    select.form-control option[value="High"] {
-        color: var(--danger);
-    }
-    
-    select.form-control option[value="Medium"] {
-        color: var(--warning);
-    }
-    
-    select.form-control option[value="Low"] {
-        color: var(--success);
-    }
-    
-    .form-actions {
-        display: flex;
-        gap: 1rem;
-    }
-    
-    .btn {
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        text-align: center;
-        cursor: pointer;
-    }
-    
-    .btn-primary {
-        background-color: var(--primary);
-        color: white;
-    }
-    
-    .btn-primary:hover {
-        background-color: var(--primary-light);
-    }
-    
-    .btn-secondary {
-        background-color: #e9ecef;
-        color: var(--dark);
-    }
-    
-    .btn-secondary:hover {
-        background-color: #dee2e6;
-    }
-    
-    @media (max-width: 768px) {
-        .form-row {
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-    }
-</style>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    // Set default dates
-    document.addEventListener('DOMContentLoaded', function() {
-        // Set start date to today
-        const today = new Date();
-        const formattedToday = today.toISOString().split('T')[0];
-        document.getElementById('start_date').value = formattedToday;
-        
-        // Set due date to one week from today
-        const nextWeek = new Date();
-        nextWeek.setDate(today.getDate() + 7);
-        const formattedNextWeek = nextWeek.toISOString().split('T')[0];
-        document.getElementById('due_date').value = formattedNextWeek;
-        
-        // Form validation
-        const form = document.querySelector('.task-form');
-        form.addEventListener('submit', function(event) {
-            const startDate = new Date(document.getElementById('start_date').value);
-            const dueDate = new Date(document.getElementById('due_date').value);
-            
-            if (dueDate < startDate) {
-                event.preventDefault();
-                alert('Due date cannot be earlier than start date');
-            }
-        });
-    });
-</script>
 {% endblock %}

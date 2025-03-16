@@ -16,7 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from task_manager import views
 
 urlpatterns = [
@@ -31,6 +31,9 @@ urlpatterns = [
     path('task_detail/<int:task_id>/', views.task_detail, name='task_detail'),
     path('delete_task/<int:task_id>/', views.delete_task, name='delete_task'),
     path('about/', views.about, name='about'),
+    path('accounts/', include('allauth.urls')),
     path('signup/', views.signup, name='signup'),
+    path('login/', views.login_view, name='login'),
+    path('password_reset/', views.password_reset, name='password_reset'),
     path('', views.home, name='home'),
 ]

@@ -5,14 +5,13 @@ import os
 from datetime import datetime, timedelta
 from collections import defaultdict
 
-def generate_short_title(task_description, api_key):
+def generate_short_title(task_description):
     """
     Generate a short title for a task using Gemini AI.
-    
+
     Args:
         task_description (str): The full task description
-        api_key (str): Google API key for Gemini
-    
+
     Returns:
         str: A short title for the task
     """
@@ -20,14 +19,15 @@ def generate_short_title(task_description, api_key):
     prompt = f"""
     Please generate a short, concise title (maximum 5 words) for the following task description.
     The title should be descriptive but brief, with no punctuation at the end.
-    
+
     Task description: {task_description}
-    
+
     Provide ONLY the title with no additional text or explanation.
     """
-    
+
     # Prepare the API request
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+    from test_task_manager.settings import GEMINI_API_KEY
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
     headers = {'Content-Type': 'application/json'}
     data = {
         "contents": [{
