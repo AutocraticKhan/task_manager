@@ -6,6 +6,9 @@ from .models import Task, Subtask
 from datetime import date, timedelta, datetime
 import os
 
+def home(request):
+    return render(request, 'home.html')
+
 def all_tasks(request):
     tasks = Task.objects.all()
     for task in tasks:
