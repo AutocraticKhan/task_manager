@@ -3,295 +3,152 @@
 {% block title %}Task Manager{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <div class="page-header-content">
-        <h2 class="page-title">
-            <i class="fas fa-tasks"></i> Welcome to Task Manager
-        </h2>
-        <!-- <div class="header-stats">
-            <div class="stat-card">
-                <i class="fas fa-inbox"></i>
-                <div>
-                    <span class="stat-number">{% if total_tasks %}{{ total_tasks }}{% else %}0{% endif %}</span>
-                    <span class="stat-label">Total Tasks</span>
-                </div>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="container">
+            <h1 class="hero-title">
+                <i class="fas fa-rocket"></i> Task Manager Pro
+            </h1>
+            <p class="hero-text">Organize your work, boost productivity, and achieve more every day</p>
+            <div class="hero-cta">
+                <a href="{% url 'add_task' %}" class="cta-button">
+                    Get Started Now <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
-            <div class="stat-card">
-                <i class="fas fa-check-circle"></i>
-                <div>
-                    <span class="stat-number">{% if completed_tasks %}{{ completed_tasks }}{% else %}0{% endif %}</span>
-                    <span class="stat-label">Completed</span>
-                </div>
-            </div>
-        </div> -->
+        </div>
     </div>
-</div>
+</section>
 
-<div class="home-content">
+<!-- Main Content -->
+<main class="container">
     <div class="quick-actions-grid">
+        <!-- Your existing action cards here -->
         <div class="action-card">
-            <div class="card-icon bg-primary">
-                <i class="fas fa-list"></i>
-            </div>
-            <h3>All Tasks</h3>
-            <p>View and manage all your tasks in one place</p>
-            <a href="{% url 'all_tasks' %}" class="btn btn-primary">
-                Explore <i class="fas fa-arrow-right"></i>
-            </a>
+            <!-- ... existing card content ... -->
         </div>
-
-        <div class="action-card">
-            <div class="card-icon bg-warning">
-                <i class="fas fa-calendar-day"></i>
-            </div>
-            <h3>Today's Tasks</h3>
-            <p>Focus on what needs to be done today</p>
-            <a href="{% url 'today_tasks' %}" class="btn btn-warning">
-                View Daily <i class="fas fa-clock"></i>
-            </a>
-        </div>
-
-        <div class="action-card">
-            <div class="card-icon bg-success">
-                <i class="fas fa-check-double"></i>
-            </div>
-            <h3>Completed</h3>
-            <p>Review your accomplished tasks</p>
-            <a href="{% url 'completed_tasks' %}" class="btn btn-success">
-                Celebrate <i class="fas fa-party-horn"></i>
-            </a>
-        </div>
-
-        <div class="action-card highlight">
-            <div class="card-icon bg-purple">
-                <i class="fas fa-plus"></i>
-            </div>
-            <h3>Add New Task</h3>
-            <p>Create a new task and stay organized</p>
-            <a href="{% url 'add_task' %}" class="btn btn-purple">
-                Get Started <i class="fas fa-rocket"></i>
-            </a>
-        </div>
+        <!-- ... other cards ... -->
     </div>
-</div>
+</main>
 {% endblock %}
 
 {% block extra_css %}
 <style>
-    :root {
-        --primary: #4A90E2;
-        --primary-dark: #357ABD;
-        --success: #6DD0A3;
-        --success-dark: #4DAE84;
-        --warning: #FFC107;
-        --warning-dark: #E0A800;
-        --purple: #9B59B6;
-        --purple-dark: #8E44AD;
+    /* ===== Hero Section ===== */
+    .hero {
+        background: linear-gradient(112deg, rgba(52, 73, 102, 0.9) 0%, rgba(42, 67, 101, 0.9) 100%),
+                    url('https://images.unsplash.com/photo-1496171367470-9ed9a91ea931?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+        background-size: cover;
+        background-position: center;
+        padding: 6rem 1rem;
+        margin-bottom: 3rem;
+        position: relative;
     }
 
-    .page-header {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        padding: 3rem 1rem;
-        margin-bottom: 2rem;
-        border-bottom: 1px solid rgba(0,0,0,0.05);
-    }
-
-    .page-header-content {
+    .hero-content {
         max-width: 1200px;
         margin: 0 auto;
+        text-align: center;
+        color: white;
+        position: relative;
+        z-index: 1;
     }
 
-    .page-title {
-        font-size: 2.5rem;
-        color: #2c3e50;
-        display: flex;
+    .hero-title {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .hero-text {
+        font-size: 1.4rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+    }
+
+    .cta-button {
+        display: inline-flex;
         align-items: center;
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .header-stats {
-        display: flex;
-        gap: 2rem;
-        margin-top: 2rem;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.06);
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        min-width: 200px;
-    }
-
-    .stat-card i {
-        font-size: 1.5rem;
-        color: var(--primary);
-        background: rgba(74,144,226,0.1);
-        padding: 1rem;
-        border-radius: 8px;
-    }
-
-    .stat-number {
-        font-size: 1.8rem;
+        gap: 12px;
+        padding: 1.2rem 2.5rem;
+        border-radius: 50px;
+        background: #6DD0A3;
+        color: white;
         font-weight: 600;
-        display: block;
-        color: #2c3e50;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(109, 208, 163, 0.3);
+        border: 2px solid transparent;
     }
 
-    .stat-label {
-        color: #95a5a6;
-        font-size: 0.9rem;
+    .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(109, 208, 163, 0.4);
+        background: #5cb890;
+    }
+
+    /* ===== Existing Content Styles ===== */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
     }
 
     .quick-actions-grid {
-        max-width: 1200px;
-        margin: 0 auto;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 2rem;
-        padding: 1rem;
+        padding: 2rem 0;
     }
 
     .action-card {
         background: white;
-        border-radius: 12px;
+        border-radius: 15px;
         padding: 2rem;
         text-align: center;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eaeaea;
     }
 
     .action-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
     }
 
-    .card-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1.5rem;
-        font-size: 1.5rem;
-        color: white;
-    }
-
-    .bg-primary { background: var(--primary); }
-    .bg-warning { background: var(--warning); }
-    .bg-success { background: var(--success); }
-    .bg-purple { background: var(--purple); }
-
-    .action-card h3 {
-        color: #2c3e50;
-        margin-bottom: 0.75rem;
-        font-size: 1.3rem;
-    }
-
-    .action-card p {
-        color: #7f8c8d;
-        font-size: 0.95rem;
-        margin-bottom: 1.5rem;
-        line-height: 1.5;
-    }
-
-    .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.7rem;
-        padding: 0.8rem 1.8rem;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        border: 2px solid transparent;
-    }
-
-    .btn-primary {
-        background: var(--primary);
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background: white;
-        color: var(--primary);
-        border-color: var(--primary);
-        box-shadow: 0 3px 10px rgba(74,144,226,0.2);
-    }
-
-    .btn-warning {
-        background: var(--warning);
-        color: #2c3e50;
-    }
-
-    .btn-warning:hover {
-        background: white;
-        color: var(--warning-dark);
-        border-color: var(--warning);
-        box-shadow: 0 3px 10px rgba(255,193,7,0.2);
-    }
-
-    .btn-success {
-        background: var(--success);
-        color: white;
-    }
-
-    .btn-success:hover {
-        background: white;
-        color: var(--success-dark);
-        border-color: var(--success);
-        box-shadow: 0 3px 10px rgba(109,208,163,0.2);
-    }
-
-    .btn-purple {
-        background: var(--purple);
-        color: white;
-    }
-
-    .btn-purple:hover {
-        background: white;
-        color: var(--purple-dark);
-        border-color: var(--purple);
-        box-shadow: 0 3px 10px rgba(155,89,182,0.2);
-    }
-
-    .highlight {
-        position: relative;
-        overflow: hidden;
-    }
-
-    .highlight:before {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, 
-            transparent 25%,
-            rgba(255,255,255,0.1) 50%,
-            transparent 75%);
-        animation: shine 3s infinite;
-    }
-
-    @keyframes shine {
-        100% {
-            transform: translate(50%, 50%);
-        }
-    }
+    /* ... rest of your existing styles ... */
 
     @media (max-width: 768px) {
-        .header-stats {
-            flex-direction: column;
+        .hero {
+            padding: 4rem 1rem;
         }
         
-        .page-title {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-text {
+            font-size: 1.2rem;
+        }
+        
+        .cta-button {
+            padding: 1rem 2rem;
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-title {
             font-size: 2rem;
+        }
+        
+        .hero-text {
+            font-size: 1.1rem;
         }
     }
 </style>
