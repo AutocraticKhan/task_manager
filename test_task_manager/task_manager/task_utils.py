@@ -5,12 +5,13 @@ import os
 from datetime import datetime, timedelta
 from collections import defaultdict
 
-def generate_short_title(task_description):
+def generate_short_title(task_description, api_key):
     """
     Generate a short title for a task using Gemini AI.
 
     Args:
         task_description (str): The full task description
+        api_key (str): Google API key for Gemini
 
     Returns:
         str: A short title for the task

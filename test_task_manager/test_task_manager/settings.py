@@ -144,3 +144,5 @@ ACCOUNT_SIGNUP_TEMPLATE = 'account/signup.html'
 SOCIALACCOUNT_PROVIDERS = {}
 
 LOGIN_REDIRECT_URL = '/all_tasks/'
+
+GEMINI_API_KEY = "AIzaSyA7Vc7AXaVXz-W6ZBPOVhMgUretu1pPUWA"  # Replace with your actual API key
