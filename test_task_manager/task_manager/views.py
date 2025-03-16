@@ -160,7 +160,10 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home')
+                print(f"Login successful for user: {username}")
+                return redirect('all_tasks')
+            else:
+                print(f"Authentication failed for user: {username}")
     else:
         form = LoginForm()
     return render(request, 'account/login.html', {'form': form})

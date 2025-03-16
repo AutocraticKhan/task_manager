@@ -142,3 +142,5 @@ ACCOUNT_LOGIN_TEMPLATE = 'account/login.html'
 ACCOUNT_SIGNUP_TEMPLATE = 'account/signup.html'
 
 SOCIALACCOUNT_PROVIDERS = {}
+
+LOGIN_REDIRECT_URL = '/all_tasks/'
