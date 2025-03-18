@@ -71,18 +71,25 @@ def add_task(request):
             priority = form.cleaned_data['priority']
 
             # Call Gemini API to generate title
-            api_key = os.environ.get('GEMINI_API_KEY', 'AIzaSyA7Vc7AXaVXz-W6ZBPOVhMgUretu1pPUWA')  # Replace with your actual API key or environment variable
-            try:
-                title = task_utils.generate_short_title(description, api_key)
-            except Exception as e:
+            api_key = os.environ.get('GEMINI_API_KEY')
+            if not api_key:
                 title = "Default Title"
-                print(f"Error generating title: {e}")
+                print("GEMINI_API_KEY not found in environment variables.")
+            else:
+                try:
+                    title = task_utils.generate_short_title(description, api_key)
+                except Exception as e:
+                    title = "Default Title"
+                    print(f"Error generating title: {e}")
 
             task = Task.objects.create(description=description, title=title, start_date=start_date, due_date=end_date, priority=priority)
 
             # Call Gemini API to create subtasks
             subtasks_data = task_utils.break_down_task(description, str(start_date), str(end_date), priority, api_key)
-
+            
+            # Save subtasks to the database
+            subtasks_data = task_utils.break_down_task(description, str(start_date), str(end_date), priority, api_key)
+            
             # Save subtasks to the database
             for subtask_date, subtask_description in subtasks_data.items():
                 subtask_date = datetime.strptime(subtask_date, "%Y-%m-%d").date()
@@ -100,7 +107,7 @@ def task_breakdown(request):
         start_date = request.POST.get('start_date')
         due_date = request.POST.get('due_date')
         priority = request.POST.get('priority')
-        api_key = "AIzaSyA7Vc7AXaVXz-W6ZBPOVhMgUretu1pPUWA" # Replace with your actual API key
+        api_key = os.environ.get('GEMINI_API_KEY')
 
         try:
             subtasks = task_utils.break_down_task(task_description, start_date, due_date, priority, api_key)
