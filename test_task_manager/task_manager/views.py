@@ -35,23 +35,9 @@ def today_tasks(request):
         # Get today's subtasks
         subtasks = Subtask.objects.filter(task=task, due_date=today, completed=False)
         
-        # Get pending subtasks (due before today and not completed)
-        pending_subtasks = Subtask.objects.filter(task=task, due_date__lt=today, completed=False)
-
-        if pending_subtasks.exists():
-            # Reschedule pending subtasks
-            api_key = os.environ.get('GEMINI_API_KEY', 'AIzaSyA7Vc7AXaVXz-W6ZBPOVhMgUretu1pPUWA')
-            task_updates = task_scheduler.redistribute_tasks(task.description, list(pending_subtasks.values('description', 'due_date')), str(today), str(task.due_date), api_key)
-
-            # Update subtasks with new due dates
-            for subtask_date, subtask_description in task_updates.items():
-                subtask_date = datetime.strptime(subtask_date, "%Y-%m-%d").date()
-                try:
-                    subtask = pending_subtasks.get(description=subtask_description)
-                    subtask.due_date = subtask_date
-                    subtask.save()
-                except Subtask.DoesNotExist:
-                    print(f"Subtask with description '{subtask_description}' not found.")
+        # Get pending subtasks (due on or before yesterday and not completed)
+        yesterday = today - timedelta(days=1)
+        pending_subtasks = Subtask.objects.filter(task=task, due_date__lte=yesterday, completed=False)
 
         if subtasks.exists() or pending_subtasks.exists():
             today_tasks_list.append({'task': task, 'subtasks': subtasks, 'pending_subtasks': pending_subtasks})
