@@ -15,7 +15,7 @@ def home(request):
 
 @login_required
 def all_tasks(request):
-    tasks = Task.objects.all()
+    tasks = Task.objects.filter(user=request.user)
     for task in tasks:
         task.subtasks = Subtask.objects.filter(task=task)
         total_subtasks = task.subtasks.count()
@@ -29,7 +29,7 @@ def all_tasks(request):
 @login_required
 def today_tasks(request):
     today = date.today()
-    tasks = Task.objects.all()
+    tasks = Task.objects.filter(user=request.user)
     today_tasks_list = []
     for task in tasks:
         # Get today's subtasks
@@ -46,7 +46,7 @@ def today_tasks(request):
 
 @login_required
 def completed_tasks(request):
-    completed_subtasks = Subtask.objects.filter(completed=True)
+    completed_subtasks = Subtask.objects.filter(completed=True, task__user=request.user)
     completed_tasks_list = []
     for subtask in completed_subtasks:
         if subtask.task not in [item['task'] for item in completed_tasks_list]:
@@ -82,7 +82,7 @@ def add_task(request):
                     title = "Default Title"
                     print(f"Error generating title: {e}")
 
-            task = Task.objects.create(description=description, title=title, start_date=start_date, due_date=end_date, priority=priority)
+            task = Task.objects.create(user=request.user, description=description, title=title, start_date=start_date, due_date=end_date, priority=priority)
 
             # Call Gemini API to create subtasks
             subtasks_data = task_utils.break_down_task(description, str(start_date), str(end_date), priority, api_key)
@@ -95,7 +95,7 @@ def add_task(request):
                 subtask_date = datetime.strptime(subtask_date, "%Y-%m-%d").date()
                 Subtask.objects.create(task=task, description=subtask_description, due_date=subtask_date)
 
-            return redirect('all_tasks')  # Redirect to the all_tasks page after adding a task
+            return redirect('all_tasks')
     else:
         form = TaskForm()
     return render(request, 'add_task.html', {'form': form})
@@ -183,14 +183,14 @@ def about(request):
 
 @login_required
 def task_detail(request, task_id):
-    task = Task.objects.get(pk=task_id)
+    task = Task.objects.get(pk=task_id, user=request.user)
     subtasks = Subtask.objects.filter(task=task)
     return render(request, 'task_detail.html', {'task': task, 'subtasks': subtasks})
 
 @login_required
 def delete_task(request, task_id):
     if request.method == 'POST':
-        task = Task.objects.get(pk=task_id)
+        task = Task.objects.get(pk=task_id, user=request.user)
         task.delete()
         return redirect('all_tasks')
     else:
