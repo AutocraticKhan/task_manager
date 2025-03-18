@@ -115,24 +115,39 @@ def break_down_task(task_description, start_date_str, due_date_str, priority, ap
     Start date: {start_date_str}
     Due date: {due_date_str}
     Days available: {days_until_due}
-    
-    Break down this task into {min(days_until_due, 10)} logical sequential subtasks, with one subtask per day,
-    starting from the start date ({start_date_str}) until the due date ({due_date_str}).
-    
-    Format your response as a JSON object with dates as keys (in YYYY-MM-DD format) and subtasks as values.
-    The dates MUST be between {start_date_str} and {due_date_str} inclusive.
-    Provide short, clear subtask descriptions that don't contain commas to avoid CSV parsing issues.
-    
-    Example format:
+
+    Generate a JSON object that meticulously breaks down the main task into a sequence of subtasks, ideally one subtask per day from the start date to the due date.
+    - Aim for approximately {min(days_until_due, 10)} subtasks, adjusting based on the task's natural breakdown. It's crucial to ensure each subtask is substantial enough to represent a meaningful daily goal.
+    - The JSON object should use dates in YYYY-MM-DD format as keys, each date indicating when the corresponding subtask should be initiated. All dates must fall within the specified start and due date range.
+    - For each date, the value should be a highly detailed subtask description. This description must not only be comprehensive and actionable but also be broken down into a list of 2-3 specific, concrete, and sequential steps. These steps should clearly guide the user on exactly what actions to take to achieve the subtask for that day.
+    - It is essential that neither the subtask descriptions nor the individual steps within them contain commas, to avoid any issues with CSV formatting.
+
+    Example JSON format:
     {{
-        "{start_date_str}": "Research topic outline",
-        "{next_day_str}": "Create initial draft",
+        "{start_date_str}": "Subtask description for {start_date_str}. Steps: [Step 1, Step 2, Step 3]",
+        "{next_day_str}": "Subtask description for {next_day_str}. Steps: [Step 1, Step 2]",
         ...
     }}
+
+    The output MUST be a valid JSON object, structured for direct parsing in Python. Ensure subtask descriptions are not just a single line, but are detailed and include actionable steps.
+
+    - Subtask descriptions must be thorough and self-contained, providing all necessary information for the user to understand and execute the subtask without needing to consult the main task repeatedly.
+    - Each subtask MUST include a "Steps" list, detailing 2-3 specific, concrete actions required to complete that day's subtask. Each step in this list should be descriptive and immediately actionable.
+
+    Verify that all dates are correctly placed within the inclusive range of {start_date_str} to {due_date_str}.
     
-    IMPORTANT: Make sure all dates are within the correct range from {start_date_str} to {due_date_str}.
+
+     Example JSON format:
+     {{
+        "{start_date_str}": "Comprehensive subtask description for {start_date_str}. Steps: [Step 1: Actionable detail for step 1, Step 2: Actionable detail for step 2, Step 3: Actionable detail for step 3]",
+         "{next_day_str}": "Comprehensive subtask description for {next_day_str}. Steps: [Step 1: Actionable detail for step 1, Step 2: Actionable detail for step 2]",
+         ...
+     }}
+
+    The JSON object should be structured for direct parsing in Python.
+    Ensure all dates are within the range from {start_date_str} to {due_date_str}.
     """
-    
+
     # Prepare the API request
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
     headers = {'Content-Type': 'application/json'}
