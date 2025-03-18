@@ -12,9 +12,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from pathlib import Path
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+dotenv.load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -145,4 +148,4 @@ SOCIALACCOUNT_PROVIDERS = {}
 
 LOGIN_REDIRECT_URL = '/all_tasks/'
 
-GEMINI_API_KEY = "AIzaSyA7Vc7AXaVXz-W6ZBPOVhMgUretu1pPUWA"  # Replace with your actual API key
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
