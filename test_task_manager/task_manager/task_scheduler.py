@@ -125,7 +125,7 @@ def redistribute_tasks(task_name, pending_subtasks, start_date_str, due_date_str
     DAYS AVAILABLE: {days_until_due}
     
     Need to redistribute ALL pending subtasks plus complete the original task by the due date.
-    Break this down into {min(days_until_due, 10)} logical sequential subtasks, with one subtask per day,
+    Break this down into {days_until_due} logical sequential subtasks, with one subtask per day,
     starting from today ({start_date_str}) until the due date ({due_date_str}).
     
     Format your response as a JSON object with dates as keys (in YYYY-MM-DD format) and subtasks as values.
